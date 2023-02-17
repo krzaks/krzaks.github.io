@@ -1,5 +1,5 @@
 // Load words from JSON file
-fetch('words.json')
+fetch('wordsv2.json')
 	.then(response => response.json())
 	.then(words => {
 		// Shuffle words array
