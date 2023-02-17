@@ -75,3 +75,51 @@ fetch('words.json')
 		console.error(error)
 		alert('Coś się zepsuło 🙄')
 	})
+
+const addWordForm = document.getElementById('addWordForm')
+
+addWordForm.addEventListener('submit', event => {
+	event.preventDefault()
+
+	const wordPolish = document.getElementById('wordPolish').value
+	const wordEnglish = document.getElementById('wordEnglish').value
+
+	const newWord = {
+		polish: wordPolish,
+		english: wordEnglish,
+	}
+
+	// w tym miejscu można przeprowadzić walidację danych wprowadzonych przez użytkownika
+
+	// wczytanie aktualnej bazy słów z pliku JSON
+	fetch('words.json')
+		.then(response => response.json())
+		.then(data => {
+			// dodanie nowego słowa do bazy
+			data.words.push(newWord)
+
+			// zapisanie nowej bazy słów do pliku JSON
+			const jsonData = JSON.stringify(data)
+			fetch('save-words.php', {
+				method: 'POST',
+				body: jsonData,
+				headers: {
+					'Content-Type': 'application/json',
+				},
+			}).then(response => {
+				if (response.ok) {
+					// informacja o dodaniu nowego słowa
+					alert('Słowo dodane do bazy!')
+					// wyczyszczenie pól formularza
+					addWordForm.reset()
+				} else {
+					// informacja o błędzie zapisu bazy słów
+					alert('Wystąpił błąd podczas zapisywania bazy słów!')
+				}
+			})
+		})
+		.catch(error => {
+			// informacja o błędzie wczytywania bazy słów
+			alert('Wystąpił błąd podczas wczytywania bazy słów!')
+		})
+})
